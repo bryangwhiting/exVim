@@ -1,0 +1,220 @@
+' ThisWorkbook
+
+
+Option Explicit
+
+
+' https://www.reddit.com/r/excel/comments/1p4ofu/applicationonkey/
+' https://msdn.microsoft.com/en-us/library/office/ff197461.aspx
+' Use workbook_activate to only have it function while spreadhseet is open
+'Sub Workbook_Activate()
+Private Sub Workbook_Open()
+    ' Important Default keystrokes
+    ' Ctrl+G: GotoRange
+    ' Ctrl+-: Hide pivot table item
+    ' SendKeys "+{F10}" = right click
+    ' Ctrl+Shift+1-6:
+        ' 1: Numeric with two decimals
+        ' 2: Time
+        ' 3: Date
+        ' 4: Currency with two decimals
+        ' 5: Percent
+        ' 6: Scientific
+        ' 7: Outline cell/Range with thin
+
+    ' Dead keys. Can't use
+    '   Application.OnKey "[", "gotoSheetLeft"
+    '   Application.OnKey "+[", "gotoSheetLeft"
+    '   Application.OnKey "]", "gotoSheetLeft"
+    '   Application.OnKey "+]", "gotoSheetLeft"
+    '   Application.OnKey "/", "search"  ' search. Neither +/ or / work, so I go with "f". I could make the real "f" key to search in row using InStr, but this is more practical.
+    '   Application.OnKey "+/", "search"  ' search. Neither +/ or / work, so I go with "f". I could make the real "f" key to search in row using InStr, but this is more practical.'    Application.OnKey "+/", "gotoSheetLeft"
+    
+    
+    ' first = keystroke. Second = macro
+    ' Movement Keys:
+    Application.OnKey "j", "moveDown"
+    Application.OnKey "k", "moveUp"
+    Application.OnKey "h", "moveLeft"
+    Application.OnKey "l", "moveRight"
+    Application.OnKey "+h", "highlightLeft"
+    Application.OnKey "+j", "highlightDown"
+    Application.OnKey "+k", "highlightUp"
+    Application.OnKey "+l", "highlightRight"
+    Application.OnKey "^h", "moveLeftSkip"
+    Application.OnKey "^j", "moveDownSkip"
+    Application.OnKey "^k", "moveUpSkip"
+    Application.OnKey "^l", "moveRightSkip"
+    
+    Application.OnKey "^+l", "lctrlshift"
+    
+    Application.OnKey "g", "gotoBeginningOfColumn"
+    Application.OnKey "+g", "gotoBottomOfColumn"
+    Application.OnKey "0", "gotoBeginningOfRow"
+    Application.OnKey "+4", "gotoEndofRow"
+    Application.OnKey "w", "moveRightNCols"
+    Application.OnKey "+w", "moveDownNRows"
+    Application.OnKey "b", "moveLeftNCols"
+    Application.OnKey "+b", "moveUpNRows"
+    Application.OnKey ";", "gotoSheetLeft"
+    Application.OnKey "+;", "gotoSheetLeft"
+    Application.OnKey "'", "gotoSheetRight"
+    Application.OnKey "+'", "gotoSheetRight"
+
+    
+    ' Edit keys
+    Application.OnKey "i", "editCellStart"
+    Application.OnKey "+i", "insertColumnLeft"
+    Application.OnKey "u", "undo"
+    Application.OnKey "d", "deleteRow"
+    Application.OnKey "+d", "deleteColumn"
+    Application.OnKey "x", "multiMacro_x" ' ActiveCell: clearCell. ActiveChart: productivityRenameYAxisTitle. PivotTable: pivotTableHideCurrentField.
+    Application.OnKey "+x", "deleteSheet"
+    Application.OnKey "c", "multiMacro_c" ' ActiveCell: clearCellAndEditCellEnd. ActiveChart: NOTHING. PivotTable: pivotTableCalculatedField.
+    Application.OnKey "y", "multiMacro_y"       ' ActiveCell: Copy. ActiveChart: productivityRenameYAxisTitle. PivotTable: copy.
+    Application.OnKey "p", "paste"
+    Application.OnKey "+p", "pasteFormats"
+    'Application.OnKey "+^p", "pasteValues"         ' FIXME
+    Application.OnKey "o", "insertRowBelow"
+    Application.OnKey "+o", "insertRowAbove"
+    Application.OnKey "a", "editCellEnd"
+    Application.OnKey "+a", "insertColumnRight"
+    Application.OnKey "+y", "copySheet"
+    Application.OnKey "+9", "orderSheetLeft"  ' Move current sheet one spot left
+    Application.OnKey "+0", "orderSheetRight"  ' Move current sheet one spot right
+    Application.OnKey "r", "multiMacro_r"   ' ActiveCell: searchAndReplace. ActiveChart: NOTHING. PivotTable: refreshPivotTable.
+    Application.OnKey "+r", "renameSheet"
+    
+    ' Search and Visual Block
+    Application.OnKey "v", "highlightRow"
+    Application.OnKey "+v", "highlightColumn"
+    Application.OnKey "z", "centerScreenOnCell"  ' Center screen on cell
+    Application.OnKey "f", "searchTopRowForVar"  ' Highlights Top row. Finds the var name you've inputted.
+    Application.OnKey "+f", "searchFilterColumn"
+    Application.OnKey "m", "markCell_1"
+    Application.OnKey "+m", "markCell_2"
+    Application.OnKey "`", "gotoMarkedCell_1"
+    Application.OnKey "+`", "gotoMarkedCell_2"
+    
+    ' Non-vi type keys
+    Application.OnKey ",", "formatDecreaseDecimal" 'Decrease decimals. I would prefer "<", but I can't find a way with SendKeys to do it.
+    Application.OnKey ".", "formatIncreaseDecimal" 'Increase decimals >
+    Application.OnKey "s", "colorCells"
+    Application.OnKey "+s", "colorSheet"
+    Application.OnKey "t", "multiMacro_t"  ' ActiveCell: macroPivotTable. PivotTable: pivotTableToggleSubtotals. ActiveChart: productivityRenameChartTitle.
+    Application.OnKey "+t", "pivotTableToggleGrandTotals"
+    Application.OnKey "e", "macroRefreshPivotTables"  '
+    Application.OnKey "+e", "macroChangeDataSourceUpdateAll"  '
+    Application.OnKey "n", "createLineChart"
+    
+End Sub
+'
+'Sub Workbook_Deactivate()
+Private Sub Workbook_BeforeClose(cancel As Boolean)
+    ' Clears Keyboard after closing workbook. Otherwise, keybindings would transfer across Excel workbooks.
+    Application.OnKey "^+h"
+    Application.OnKey "^+j"
+    Application.OnKey "^+k"
+    Application.OnKey "^+l"
+    
+    Application.OnKey "`"
+    Application.OnKey "+`" '~
+    Application.OnKey "1"
+    Application.OnKey "+1"
+    Application.OnKey "2"
+    Application.OnKey "+2"
+    Application.OnKey "3"
+    Application.OnKey "+3"
+    Application.OnKey "4"
+    Application.OnKey "+4"
+    Application.OnKey "5"
+    Application.OnKey "+5"
+    Application.OnKey "6"
+    Application.OnKey "+6"
+    Application.OnKey "7"
+    Application.OnKey "+7"
+    Application.OnKey "8"
+    Application.OnKey "+8"
+    Application.OnKey "9"
+    Application.OnKey "+9"
+    Application.OnKey "0"
+    Application.OnKey "+0"
+    Application.OnKey "-"
+    Application.OnKey "+-"
+    Application.OnKey "="
+    Application.OnKey "+="
+    
+    Application.OnKey "q"
+    Application.OnKey "+q"
+    Application.OnKey "w"
+    Application.OnKey "+w"
+    Application.OnKey "e"
+    Application.OnKey "+e"
+    Application.OnKey "r"
+    Application.OnKey "+r"
+    Application.OnKey "t"
+    Application.OnKey "+t"
+    Application.OnKey "y"
+    Application.OnKey "+y"
+    Application.OnKey "u"
+    Application.OnKey "+u"
+    Application.OnKey "i"
+    Application.OnKey "+i"
+    Application.OnKey "o"
+    Application.OnKey "+o"
+    Application.OnKey "p"
+    Application.OnKey "+p"
+    Application.OnKey "^+p"
+'    Application.OnKey "["
+'    Application.OnKey "+["
+'    Application.OnKey "]"
+'    Application.OnKey "+]"
+    Application.OnKey "\"
+    Application.OnKey "+\"
+    
+    Application.OnKey "a"
+    Application.OnKey "+a"
+    Application.OnKey "s"
+    Application.OnKey "+s"
+    Application.OnKey "d"
+    Application.OnKey "+d"
+    Application.OnKey "f"
+    Application.OnKey "+f"
+    Application.OnKey "g"
+    Application.OnKey "+g"
+    Application.OnKey "h"
+    Application.OnKey "+h"
+    Application.OnKey "j"
+    Application.OnKey "+j"
+    Application.OnKey "k"
+    Application.OnKey "+k"
+    Application.OnKey "l"
+    Application.OnKey "+l"
+    Application.OnKey ";"
+    Application.OnKey "+;"
+    Application.OnKey "'"
+    Application.OnKey "+'"
+    
+    Application.OnKey "z"
+    Application.OnKey "+z"
+    Application.OnKey "x"
+    Application.OnKey "+x"
+    Application.OnKey "c"
+    Application.OnKey "+c"
+    Application.OnKey "v"
+    Application.OnKey "+v"
+    Application.OnKey "b"
+    Application.OnKey "+b"
+    Application.OnKey "n"
+    Application.OnKey "+n"
+    Application.OnKey "m"
+    Application.OnKey "+m"
+    Application.OnKey ","
+    Application.OnKey "+,"
+    Application.OnKey "."
+    Application.OnKey "+."
+    Application.OnKey "/"
+    Application.OnKey "+/"
+End Sub
+
+
