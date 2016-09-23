@@ -1,0 +1,910 @@
+' Module 1
+
+
+Option Explicit
+' Key names for "SendKeys": http://www.mrexcel.com/forum/excel-questions/602726-application-onkey-not-working.html
+' http://www.java2s.com/Code/VBA-Excel-Access-Word/Application/usetheOnKeymethodtoassignamacroproceduretoasinglekeystrokeoranycombinationofCtrlShiftandAltwithanotherkey.htm
+' https://msdn.microsoft.com/en-us/library/office/ff197461.aspx
+' Command bar commands: https://support.microsoft.com/en-us/kb/213552
+' Dialog Boxes:
+
+' Moving Cells
+Private Sub moveDown()
+    On Error Resume Next
+    ActiveCell.Offset(1, 0).Select
+End Sub
+Private Sub moveUp()
+    On Error Resume Next
+    ActiveCell.Offset(-1, 0).Select
+End Sub
+Private Sub moveLeft()
+    On Error Resume Next
+    ActiveCell.Offset(0, -1).Select
+End Sub
+Private Sub moveRight()
+    On Error Resume Next
+    ActiveCell.Offset(0, 1).Select
+End Sub
+
+
+
+' Selecting multiple cells
+Private Sub highlightLeft()
+    On Error Resume Next
+    'Selection.End(xlToLeft).Select
+    Dim numRows, numCols As Integer
+    numRows = Selection.Rows.Count
+    numCols = Selection.Columns.Count
+    Selection.Resize(numRows, numCols + 1).Offset(0, -1).Select
+End Sub
+Private Sub highlightDown()  ' Moves down one
+    On Error Resume Next
+    'Selection.End(xlDown).Select
+    
+    Dim numRows, numCols As Integer
+    numRows = Selection.Rows.Count
+    numCols = Selection.Columns.Count
+    Selection.Resize(numRows + 1, numCols).Select
+End Sub
+Private Sub highlightUp()
+    On Error Resume Next
+    'Selection.End(xlUp).Select
+    
+    Dim numRows, numCols As Integer
+    numRows = Selection.Rows.Count
+    numCols = Selection.Columns.Count
+    Selection.Resize(numRows + 1, numCols).Offset(-1, 0).Select
+End Sub
+Private Sub highlightRight()
+    On Error Resume Next
+    'Selection.End(xlToRight).Select
+    
+    Dim numRows, numCols As Integer
+    numRows = Selection.Rows.Count
+    numCols = Selection.Columns.Count
+    Selection.Resize(numRows, numCols + 1).Select
+End Sub
+ 
+Private Sub moveLeftSkip()
+    On Error Resume Next
+    Selection.End(xlToLeft).Select
+End Sub
+Private Sub moveDownSkip()  ' Moves down one
+    On Error Resume Next
+    Selection.End(xlDown).Select
+End Sub
+Private Sub moveUpSkip()
+    On Error Resume Next
+    Selection.End(xlUp).Select
+End Sub
+Private Sub moveRightSkip()
+    On Error Resume Next
+    Selection.End(xlToRight).Select
+End Sub
+
+' CTRL + SHIFT Selecting multiple cells
+Private Sub hcapshift()
+    On Error Resume Next
+    'Selection.End(xlToLeft).Select
+    Dim numRows, numCols As Integer
+    numRows = Selection.Rows.Count
+    numCols = Selection.Columns.Count
+    Selection.Resize(numRows, numCols + 1).Offset(0, -1).Select
+End Sub
+Private Sub jcapshift()  ' Moves down one
+    On Error Resume Next
+    'Selection.End(xlDown).Select
+    
+    Dim numRows, numCols As Integer
+    numRows = Selection.Rows.Count
+    numCols = Selection.Columns.Count
+    Selection.Resize(numRows + 1, numCols).Select
+End Sub
+Private Sub kcapshift()
+    On Error Resume Next
+    'Selection.End(xlUp).Select
+    
+    Dim numRows, numCols As Integer
+    numRows = Selection.Rows.Count
+    numCols = Selection.Columns.Count
+    Selection.Resize(numRows + 1, numCols).Offset(-1, 0).Select
+End Sub
+Private Sub lctrlshift()
+    On Error Resume Next
+    'Selection.End(xlToRight).Select
+    
+    MsgBox (Selection.Address(ReferenceStyle:=xlR1C1))
+    
+    Dim numRows, numCols, newCol, currRow, currCol As Integer
+    'numRows = Selection.Rows.Count
+    'numCols = Selection.Columns.Count
+    currRow = Selection.Row
+    currCol = Selection.Column
+    newCol = Selection.End(xlToRight).Column
+    
+    'Selection.End(xlToRight).Select
+    Range(Cells(currRow, currCol), Cells(currRow, newCol)).Select
+    SendKeys ("+{ENTER}")
+    Dim a As Integer
+ 
+    
+    a = 5
+    'Selection.Resize(numRows, newCol).Select
+    
+    'newCol = Selection.End(xlToRight).Column
+    'Selection.Resize(numRows, numCols + newCol).Select
+    'Selection.Resize(numRows, numCols + newCol).Offset(0, ).Select
+End Sub
+
+
+
+' Movement: Go to top of current column
+Private Sub gotoBeginningOfColumn()
+    On Error Resume Next
+    Cells(1, Application.ActiveCell.Column).Select
+End Sub
+' Movement: Go to last observation in column
+Private Sub gotoBottomOfColumn()
+    On Error Resume Next
+    ' Go to last row
+    Cells(1048576, Application.ActiveCell.Column).Select
+    ' Go up to first filled-in value
+    Selection.End(xlUp).Select
+End Sub
+' Movement: 0. Go to first cell in row
+Private Sub gotoBeginningOfRow()
+    On Error Resume Next
+    Cells(Application.ActiveCell.Row, 1).Select
+End Sub
+Private Sub gotoEndofRow()
+    On Error Resume Next
+    Cells(Application.ActiveCell.Row, 16384).Select
+    Selection.End(xlToLeft).Select
+End Sub
+
+Private Sub gotoSheetRight()
+    On Error Resume Next
+    ' If you're on the last sheet, go to the first (enables sheet 'wrapping')
+    If (ActiveSheet.Index) = ActiveWorkbook.Sheets.Count Then
+        Sheets(1).Activate
+    Else
+        Sheets(ActiveSheet.Index + 1).Activate
+    End If
+End Sub
+Private Sub gotoSheetLeft()
+    On Error Resume Next
+    ' If you're on the first sheet, go to the last (enables sheet 'wrapping')
+    If ActiveSheet.Index = 1 Then
+        Sheets(ActiveWorkbook.Sheets.Count).Activate
+    Else
+        Sheets(ActiveSheet.Index - 1).Activate
+    End If
+End Sub
+Private Sub highlightSheetsLeft()
+    On Error Resume Next
+    Sheets(ActiveSheet.Index - 1).Activate
+End Sub
+
+
+Private Sub moveDownNRows()
+    On Error Resume Next
+    ' Get current column
+    If ActiveCell.Row >= 1048571 Then
+        Call gotoBeginningOfColumn
+    Else
+        ActiveCell.Offset(5, 0).Select
+    End If
+    
+End Sub
+Private Sub moveUpNRows()
+    On Error Resume Next
+    ' Get current column
+    If ActiveCell.Row <= 5 Then
+        Call gotoBeginningOfColumn
+    Else
+        ActiveCell.Offset(-5, 0).Select
+    End If
+    
+End Sub
+Private Sub moveLeftNCols()
+    On Error Resume Next
+    ' Get current column
+    If ActiveCell.Column <= 5 Then
+        Call gotoBeginningOfRow
+    Else
+        ActiveCell.Offset(0, -5).Select
+    End If
+End Sub
+Private Sub moveRightNCols()
+    On Error Resume Next
+    ' Get current column
+    If ActiveCell.Column > 16378 Then
+        Call gotoEndofRow
+    Else
+        ActiveCell.Offset(0, 5).Select
+    End If
+End Sub
+
+
+
+
+' EDIT KEYS
+Private Sub editCellStart()
+    On Error Resume Next
+    SendKeys "{F2}"
+    SendKeys "{HOME}"
+End Sub
+Private Sub editCellEnd()
+    On Error Resume Next
+    SendKeys "{F2}"
+End Sub
+
+
+Private Sub undo()
+    On Error Resume Next
+    ' Applicaiton.undo only undoes the last function
+    SendKeys "^z"
+End Sub
+
+' Build in an undo routine:
+' http://spreadsheetpage.com/index.php/tip/undoing_a_vba_subroutine/
+Private Sub deleteColumn()
+    On Error Resume Next
+    SendKeys "%hdc"
+End Sub
+Private Sub deleteRow()
+    On Error Resume Next
+    SendKeys "%hdr"
+End Sub
+' EDIT: x: delete
+Private Sub clearCell()
+    On Error Resume Next
+    SendKeys "{DEL}"
+End Sub
+' EDIT: x: delete
+Private Sub deleteSheet()
+    On Error Resume Next
+    SendKeys "%hds"
+End Sub
+' EDIT: c: delete and insert
+Private Sub clearCellAndEditCellEnd()
+    On Error Resume Next
+    SendKeys "{DEL}"
+    SendKeys "{F2}"
+End Sub
+Private Sub copy()
+    On Error Resume Next
+    SendKeys "^c"
+End Sub
+Private Sub paste()
+    On Error Resume Next
+    SendKeys "^v"
+End Sub
+Private Sub pasteFormats()
+    On Error Resume Next
+    ' Doesn't work with "undo"
+    ' Selection.PasteSpecial paste:=xlPasteFormats, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+    SendKeys "%est"
+    SendKeys "{ENTER}"
+End Sub
+Private Sub pasteValues()
+    On Error Resume Next
+    ' Doesn't work with "undo"
+    ' Selection.PasteSpecial paste:=xlPasteFormats, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+    SendKeys "%esv"
+    SendKeys "{ENTER}"
+End Sub
+
+Private Sub insertRowBelow()
+    On Error Resume Next
+    ActiveCell.Offset(1, 0).Select
+    SendKeys "%hir"
+End Sub
+Private Sub insertRowAbove()
+    On Error Resume Next
+    SendKeys "%hir"
+End Sub
+' Insert column to right
+Private Sub insertColumnRight()
+    On Error Resume Next
+    ActiveCell.Offset(0, 1).Select
+    'ActiveCell.EntireColumn.Insert ' Can't use, because it eliminates "undo"
+    ' Application.CommandBars.FindControl(ID:=297).Execute ' This doesn't work either
+    'SendKeys "%hic"
+End Sub
+' Insert column to left
+Private Sub insertColumnLeft()
+    On Error Resume Next
+    SendKeys "%hic"
+End Sub
+' Duplicate current worksheet after the current one
+Private Sub copySheet()
+    On Error Resume Next
+    ActiveSheet.copy After:=Sheets(ActiveSheet.Name)
+End Sub
+Private Sub orderSheetLeft()
+    On Error Resume Next
+    ActiveSheet.Move Before:=Sheets((ActiveSheet.Index - 1))
+End Sub
+Private Sub orderSheetRight()
+    On Error Resume Next
+    ActiveSheet.Move After:=Sheets((ActiveSheet.Index + 1))
+End Sub
+
+Private Sub renameSheet()
+    On Error Resume Next
+    SendKeys "%ohr"
+End Sub
+Private Sub formatIncreaseDecimal()
+    On Error Resume Next
+    ' Alternate methods, but don't work with 'undo'
+    ' Application.CommandBars.FindControl(ID:=398).Execute
+    ' Selection.NumberFormat = "0.00"
+    
+    ' For these commands to work, the "shift" key cannot be part of the keybinding.
+     SendKeys "%h0" ' Increase decimal one slot.
+    
+    ' Since 2 decimals is  the most desired outcome, we'll use this method.
+    ' Convert to numeric format, since 'alt h,f,m' won't work on "General"
+      
+'    SendKeys "%hfm"
+'    SendKeys "%d"
+'    SendKeys "2"
+'    SendKeys "{ENTER}"
+End Sub
+Sub formatDecreaseDecimal()
+    On Error Resume Next
+    ' Alternate methods, but don't work with 'undo'
+    ' Application.CommandBars.FindControl(ID:=399).Execute
+    ' Selection.NumberFormat = "0"
+    
+    ' For these commands below to work, the "shift" key cannot be part of the keybinding.
+    SendKeys "%h9" ' Decrease decimal one slot.
+    
+    ' Since 0 decimals is most common "decrease"
+    ' Note, This won't work on a "GENERAL" format
+    ' Change decimal to 0
+'    SendKeys "%hfm"
+'    SendKeys "%d"
+'    SendKeys "0"
+'    SendKeys "{ENTER}"
+End Sub
+
+
+
+' SELECT ROWS
+Private Sub highlightColumn()
+    ActiveCell.EntireColumn.Select
+End Sub
+Private Sub highlightRow()
+    ActiveCell.EntireRow.Select
+End Sub
+
+
+
+' Other keys
+' I would like this to activate the firstrow row and find the variable
+Private Sub searchTopRowForVar()
+    On Error Resume Next
+    Dim searchPhrase As String
+    Dim cell As Range
+    
+    searchPhrase = InputBox("Enter variable name:")
+    
+    ' If on first row, (as in, the first search has already happened), then go to next occurance
+    'FIXME
+    
+    ' If not on first row, then search for the first occurance of "SearchPhrase" in top column.
+    Cells(1, 1).Activate
+    ActiveCell.EntireRow.Select
+    
+    For Each cell In Selection
+        If InStr(1, UCase(cell.Value), UCase(searchPhrase)) Then
+            cell.Activate
+            ActiveCell.EntireColumn.Select
+            Exit Sub
+        End If
+    Next
+End Sub
+Private Sub searchAndReplace()
+    On Error Resume Next
+    Application.Dialogs(xlDialogFormulaReplace).Show
+End Sub
+
+
+
+
+Private Sub searchFilterColumn()
+    Dim contains As String
+    Dim pt As pivotTable
+    
+    On Error Resume Next
+    Set pt = ActiveCell.pivotTable
+    On Error GoTo 0
+    
+    If pt Is Nothing Then
+        'MsgBox "No pivot table selected to refresh"
+        ' If the current cell is NOT a pivot table, we'll treat it like a normal data filter
+        If ActiveSheet.FilterMode Then
+        ' Turn off autofilter
+        SendKeys "%hsf"
+        'ActiveSheet.ShowAllData
+        'ActiveSheet.ListObjects(1).ShowAutoFilter = False
+        Else
+            ' This code filters just teh current column
+            contains = InputBox("Command: Filter current column containing the following phrase:")
+            contains = "=*" & contains & "*"
+            ActiveCell.EntireColumn.AutoFilter field:=1, Criteria1:=contains, visibleDropDown:=True
+            
+            
+        End If
+        
+    ' If the current cell is a pivot table, we'll filter the current variable a different way. Note, this is different than filters at the top! This is filtering the variable itself, when in the "rows" section of the pivot table
+    Else
+        Dim topLeftCell As String
+        Dim currColumn As Integer
+        
+        ' Get current column
+        currColumn = ActiveCell.Column
+        
+        ' All of this chunck just goes to the top left of the pivot table, and then to the variable header row.
+        ' Go to top left cell in pivot table
+        topLeftCell = Left(pt.TableRange1.Address, 4)
+        Range(topLeftCell).Activate
+        ' Go to what was "current column". (If current column is 1, we don't want to offset at all.
+        ActiveCell.Offset(0, (currColumn - 1)).Select
+        ' Go down one cell, to where the variable is
+        ActiveCell.Offset(1, 0).Select
+        
+        ' Apply "label" filter
+        SendKeys "%{DOWN}"
+        SendKeys "la"
+        
+        Exit Sub
+    End If
+End Sub
+
+
+' Center the screen on the selected cell. Source: http://www.cpearson.com/excel/zoom.htm (with minor adaptations
+Private Sub centerScreenOnCell()
+
+    Dim VisRows As Integer
+    Dim VisCols As Integer
+    Dim onCell As Range
+    
+    Set onCell = ActiveCell
+    Application.ScreenUpdating = False
+    '
+    ' Switch over to the OnCell's workbook and worksheet.
+    '
+    onCell.Parent.Parent.Activate
+    onCell.Parent.Activate
+    '
+    ' Get the number of visible rows and columns for the active window.
+    '
+    With ActiveWindow.VisibleRange
+        VisRows = .Rows.Count
+        VisCols = .Columns.Count
+    End With
+    '
+    ' Now, determine what cell we need to GOTO. The GOTO method will
+    ' place that cell reference in the upper left corner of the screen,
+    ' so that reference needs to be VisRows/2 above and VisCols/2 columns
+    ' to the left of the cell we want to center on. Use the MAX function
+    ' to ensure we're not trying to GOTO a cell in row <=0 or column <=0.
+    '
+    With Application
+        .Goto Reference:=onCell.Parent.Cells( _
+            .WorksheetFunction.Max(1, onCell.Row + (onCell.Rows.Count / 2) - (VisRows / 2)), _
+            .WorksheetFunction.Max(1, onCell.Column + (onCell.Columns.Count / 2) - _
+            .WorksheetFunction.RoundDown((VisCols / 2), 0))), _
+         scroll:=True
+    End With
+    
+    onCell.Select
+    Application.ScreenUpdating = True
+
+End Sub
+
+Private Sub macroPivotTable()
+    On Error Resume Next
+    ' Allows for
+    ActiveCell.CurrentRegion.Select
+    SendKeys "%nv"
+    SendKeys "{ENTER}"
+    
+End Sub
+
+Private Sub pivotTableToggleSubtotals()
+    On Error Resume Next
+    ' Turn off subtotals
+    SendKeys "%jytd"
+    
+    ' Toggle subtotals at "bottom" of group
+'    If ActiveCell.PivotField.Subtotals(2) = True Then
+'        ' Turn off subtotals
+'        SendKeys "%jytd"
+'    End If
+End Sub
+Private Sub pivotTableToggleGrandTotals()
+    On Error Resume Next
+    ' Turn off subtotals
+    SendKeys "%jygf"
+    
+    ' Toggle subtotals at "bottom" of group
+'    If ActiveCell.PivotField.Subtotals(2) = True Then
+'        ' Turn off subtotals
+'        SendKeys "%jytd"
+'    End If
+End Sub
+
+
+Private Sub macroRefreshPivotTables()
+    On Error Resume Next
+    Dim pt As pivotTable
+    Set pt = ActiveCell.pivotTable
+    On Error GoTo 0
+    If pt Is Nothing Then
+        'MsgBox "No pivot table selected to refresh"
+        Exit Sub
+    Else
+        SendKeys "%jtfa"
+        'ActiveWorkbook.RefreshAll ' Doesn't allow for undo
+    End If
+End Sub
+Private Sub macroChangeDataSourceUpdateAll()
+    On Error Resume Next
+    Dim pt As pivotTable
+    Set pt = ActiveCell.pivotTable
+    On Error GoTo 0
+    If pt Is Nothing Then
+        MsgBox "No pivot table selected to update"
+        Exit Sub
+    Else
+        SendKeys "%jtid"
+        'ActiveCell.CurrentRegion.Select
+        'SendKeys "{ENTER}"
+    End If
+End Sub
+
+Private Sub colorSheet()
+    On Error Resume Next
+    'ActiveSheet.Tab.ColorIndex = xlThemeColorAccent1 Color accent
+    ActiveSheet.Tab.Color = RGB(153, 204, 0) ' Bates White green
+End Sub
+
+Private Sub colorCells()
+    On Error Resume Next
+    
+    ' Make sure it's a range
+    If TypeName(Selection) <> "Range" Then
+        MsgBox "This macro formats cells only. Please select a cell."
+        Exit Sub
+    End If
+    
+    Application.ScreenUpdating = False
+    ' If Cell is uncolored, color it
+    If Selection.Interior.ColorIndex = -4142 Then
+        'Selection.Interior.Color = RGB(153, 204, 0)
+        'Selection.Interior.ColorIndex = xlThemeColorAccent2 ' Yellow highlight
+        Selection.Interior.Color = RGB(220, 220, 220) ' Grey
+    Else
+        Selection.Interior.ColorIndex = -4142
+    End If
+    Application.ScreenUpdating = True
+End Sub
+
+' Bookmarks current cell, saving bookmark to desktop
+Private Sub markCell_InputSub(filename As String)
+    Dim username, outputDir, scriptText  As String
+    Dim fso, file  As Object
+    
+    ' Set up a file to write out the current cell address
+    username = Environ("Username")
+    outputDir = "C:\Users\" & username & "\Desktop\"
+    'filename = "~exVim-markedCell.txt" ' Read filename in through function
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set file = fso.CreateTextFile(outputDir & filename)
+    
+    ' Write out active cell address to the desktop
+    scriptText = ActiveSheet.Name & "!" & ActiveCell.Address
+    file.Write scriptText
+    file.Close
+End Sub
+Private Sub gotoMarkedCell_InputSub(filename As String)
+    ' Read in the bookmark location
+    
+    Dim strFilename As String: strFilename = "C:\Users\bwhiting\Desktop\" & filename
+    Dim strTextLine As String
+    Dim iFile As Integer: iFile = FreeFile
+    Open strFilename For Input As #iFile
+    Do Until EOF(1)
+        Line Input #1, strTextLine
+        
+    Loop
+    Close #iFile
+    ' Split the bookmark location into sheet and cell
+    Dim sheetName As String
+    Dim cellName As String
+    Dim cellLoc As Variant
+    cellLoc = Split(strTextLine, "!")
+    sheetName = cellLoc(0)
+    cellName = cellLoc(1)
+    
+    ' Goto bookmarked cell
+    Application.Goto Reference:=Worksheets(sheetName).Range(cellName)
+    
+End Sub
+' First bookmark
+Private Sub markCell_1()
+    On Error Resume Next
+    Call markCell_InputSub(filename:="~exVim-markedCell_1.txt")
+End Sub
+' Second Bookmark
+Private Sub markCell_2()
+    On Error Resume Next
+    Call markCell_InputSub(filename:="~exVim-markedCell_2.txt")
+End Sub
+Private Sub gotoMarkedCell_1()
+    On Error Resume Next
+    Call gotoMarkedCell_InputSub(filename:="~exVim-markedCell_1.txt")
+End Sub
+Private Sub gotoMarkedCell_2()
+    On Error Resume Next
+    Call gotoMarkedCell_InputSub(filename:="~exVim-markedCell_2.txt")
+End Sub
+
+Private Sub createLineChart()
+    On Error Resume Next
+    ActiveCell.CurrentRegion.Select
+    SendKeys "%nn{ENTER}"
+End Sub
+
+Private Sub pivotTableHideCurrentField()
+    On Error Resume Next
+    'ActiveCell.PivotField.Orientation = xlHidden    ' Doesn't allow "undo"
+    SendKeys "+{F10}v"  ' Right click + "v" for remove field
+    
+End Sub
+
+Private Sub pivotTableCalculatedField()
+    On Error Resume Next
+    SendKeys "%jtjf"  ' Calculated field
+End Sub
+
+'-----------------------------MULTI-FUNCTION MACROS-----------------------------
+' It would be useful to be able to do multiple things with a given key depending on what was active.
+' For example, "x" would be delete normally, but when a chart is active, it would be "x-axis rename"
+' On Error Resume Next
+'    Dim pt As PivotTable
+'    Set pt = ActiveCell.PivotTable
+'
+'    If Not ActiveChart Is Nothing Then
+'        MsgBox "Chart is Active"
+'    ElseIf Not pt Is Nothing Then
+'        MsgBox "Pivot table is active"
+'    ElseIf Not ActiveCell Is Nothing Then
+'        MsgBox "Cell is active"
+'    End If
+
+Private Sub multiMacro_x()
+    On Error Resume Next
+    Dim pt As pivotTable
+    Set pt = ActiveCell.pivotTable
+    
+    ' If a chart is active, rename the x-axis
+    If Not ActiveChart Is Nothing Then
+        Call productivityRenameXAxisTitle
+    ElseIf Not pt Is Nothing Then
+       Call pivotTableHideCurrentField
+    ' If a cell is active, delete it
+    ElseIf Not ActiveCell Is Nothing Then
+        Call clearCell
+    End If
+End Sub
+
+Private Sub multiMacro_y()
+    On Error Resume Next
+    Dim pt As pivotTable
+    Set pt = ActiveCell.pivotTable
+    
+    ' If a chart is active, rename the y-axis
+    If Not ActiveChart Is Nothing Then
+        Call productivityRenameYAxisTitle
+    ' If a pivot table is active, then copy
+    ElseIf Not pt Is Nothing Then
+        Call copy
+    ' If a cell is active, paste
+    ElseIf Not ActiveCell Is Nothing Then
+        Call copy
+    End If
+End Sub
+
+Private Sub multiMacro_t()
+    On Error Resume Next
+    Dim pt As pivotTable
+    Set pt = ActiveCell.pivotTable
+    
+    ' If a chart is active, rename the Chart title
+    If Not ActiveChart Is Nothing Then
+        Call productivityRenameChartTitle
+    ' If a pivot table is active, then toggle subtotals
+    ElseIf Not pt Is Nothing Then
+        Call pivotTableToggleSubtotals
+    ' If a cell is active, paste
+    ElseIf Not ActiveCell Is Nothing Then
+        Call macroPivotTable
+    End If
+End Sub
+
+Private Sub multiMacro_r()
+    On Error Resume Next
+    Dim pt As pivotTable
+    Set pt = ActiveCell.pivotTable
+    
+    ' If a chart is active, rename the Chart title
+    If Not ActiveChart Is Nothing Then
+        MsgBox "Chart is Active"
+    ' If a pivot table is active, then toggle subtotals
+    ElseIf Not pt Is Nothing Then
+        Call macroRefreshPivotTables
+    ' If a cell is active, paste
+    ElseIf Not ActiveCell Is Nothing Then
+        Call searchAndReplace
+    End If
+End Sub
+
+Private Sub multiMacro_s()
+    On Error Resume Next
+    Dim pt As pivotTable
+    Set pt = ActiveCell.pivotTable
+    
+    If Not ActiveChart Is Nothing Then
+        Call searchAndReplace
+    ElseIf Not pt Is Nothing Then
+        Call macroRefreshPivotTables
+    ElseIf Not ActiveCell Is Nothing Then
+        Call searchAndReplace
+    End If
+End Sub
+
+
+Private Sub multiMacro_c()
+    On Error Resume Next
+    Dim pt As pivotTable
+    Set pt = ActiveCell.pivotTable
+    
+    If Not ActiveChart Is Nothing Then
+        MsgBox "Chart is Active"
+    ElseIf Not pt Is Nothing Then
+        Call pivotTableCalculatedField
+    ElseIf Not ActiveCell Is Nothing Then
+        Call clearCellAndEditCellEnd
+    End If
+End Sub
+
+
+
+
+
+'-----------------------------USED, BUT NON-BINDED MACROS-----------------------------
+
+Sub productivityRenameChartTitle()
+    On Error Resume Next
+    Dim newChartTitle, currentChartTitle As String
+        
+    ' Check and see if a chart is active.
+    If ActiveChart Is Nothing Then
+        MsgBox "First activate a chart by clicking on it. This macro will rename the chart title."
+        Exit Sub
+    End If
+    
+    If ActiveChart.HasTitle = False Then
+        ActiveChart.HasTitle = True
+    Else
+        currentChartTitle = ActiveChart.ChartTitle.text
+    End If
+    
+    ' Input box for new chart title given current chart title, if it exists
+    newChartTitle = InputBox(Prompt:="Enter new chart title:", Title:="Rename Chart Title", Default:=currentChartTitle)
+    ActiveChart.ChartTitle.text = newChartTitle
+        
+End Sub
+Sub productivityRenameAxisTitleSUB(axisToRename As String, axisLabel As String)
+    On Error Resume Next
+    Dim newAxisTitle, currentAxisTitle As String
+        
+    ' Check and see if a chart is active.
+    If ActiveChart Is Nothing Then
+        MsgBox "First activate a chart by clicking on it. This macro will rename the chart title."
+        Exit Sub
+    End If
+    
+    If ActiveChart.Axes(axisToRename).HasTitle = False Then
+        ActiveChart.Axes(axisToRename).HasTitle = True
+    Else
+        currentAxisTitle = ActiveChart.Axes(axisToRename).AxisTitle.Format.TextFrame2.TextRange.text
+    End If
+    
+    ' Input box for new chart title given current chart title, if it exists
+    newAxisTitle = InputBox(Prompt:="Enter new " & axisLabel & "-axis title:", Title:="Rename " & axisLabel & "-axis Title", Default:=currentAxisTitle)
+    ActiveChart.Axes(axisToRename).AxisTitle.Format.TextFrame2.TextRange.text = newAxisTitle
+        
+    
+End Sub
+Sub productivityRenameXAxisTitle()
+    Call productivityRenameAxisTitleSUB(xlCategory, "X")
+End Sub
+Sub productivityRenameYAxisTitle()
+    Call productivityRenameAxisTitleSUB(xlValue, "Y")
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'-----------------------------UNUSED, NON-BINDED MACROS-----------------------------' The macro graveyard...
+' repeatAction is useless at this point, since I can't
+Private Sub repeatAction()
+    Application.Repeat
+End Sub
+
+Private Sub searchCol()
+    On Error Resume Next
+    ActiveCell.EntireColumn.Select
+    Application.Dialogs(xlDialogFormulaFind).Show
+End Sub
+
+Private Sub search()
+    On Error Resume Next
+    SendKeys "^f"
+End Sub
+
+
+Private Sub searchApplyFilters()
+    
+    'MsgBox "No pivot table selected to refresh"
+        ' If the current cell is NOT a pivot table, we'll treat it like a normal data filter
+        If ActiveSheet.FilterMode Then
+        ' Turn off autofilter
+        SendKeys "%hsf"
+        'ActiveSheet.ShowAllData
+        'ActiveSheet.ListObjects(1).ShowAutoFilter = False
+        Else
+            ' This code applies filters to all columns, and then filters the current column on "label" values
+            SendKeys "%hsf" ' Apply filter
+            
+'            Call gotoBeginningOfColumn  ' Go to top row (macro coded above)
+'            ' If cell below it is a number, apply
+'            If IsNumeric(ActiveCell.Offset(1, 0)) Then
+'                SendKeys "%{DOWN}fe" ' fe For the "equals" filter
+'            Else
+'                SendKeys "%{DOWN}fa" ' fa For the "label" filter
+'            End If
+        End If
+End Sub
